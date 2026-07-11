@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Phone, Mail, Menu, X, Layers, MapPin } from "lucide-react";
+// I imported ChevronDown, User, and GraduationCap icons here for the dropdown!
+import { Phone, Mail, Menu, X, Layers, MapPin, ChevronDown, User, GraduationCap } from "lucide-react";
 import { schoolInfo } from "../data/mock";
 
 const navLinks = [
@@ -15,6 +16,9 @@ const navLinks = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  // New state to handle the mobile dropdown toggle
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
 
   // This detects when you scroll down to make the header dynamically shrink
   useEffect(() => {
@@ -134,7 +138,9 @@ export default function Header() {
       <nav className="bg-[#0b3a8f] text-white border-t-4 border-emerald-500 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="hidden lg:flex items-center justify-between">
+            
             <ul className="flex items-center">
+              {/* Standard Links */}
               {navLinks.map((link) => (
                 <li key={link.to}>
                   <NavLink
@@ -154,7 +160,35 @@ export default function Header() {
                   </NavLink>
                 </li>
               ))}
+
+              {/* NEW DESKTOP SIGN IN DROPDOWN */}
+              <li className="relative group">
+                <button 
+                  className={`flex items-center gap-1.5 px-6 transition-all duration-300 font-semibold uppercase tracking-wide ${
+                    isScrolled ? "py-2.5 text-xs" : "py-4 text-sm"
+                  } hover:text-emerald-300`}
+                >
+                  Sign In <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
+                </button>
+                
+                {/* Dropdown Box */}
+                <div className="absolute top-full right-0 w-48 bg-white text-[#0b3a8f] shadow-xl rounded-b-lg overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border-t-[3px] border-emerald-500">
+                  <Link 
+                    to="/student-login" 
+                    className="flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-semibold text-sm border-b border-slate-100"
+                  >
+                    <GraduationCap className="w-4 h-4 text-emerald-500" /> Student Portal
+                  </Link>
+                  <Link 
+                    to="/teacher-login" 
+                    className="flex items-center gap-3 px-4 py-3.5 hover:bg-slate-50 hover:text-emerald-600 transition-colors font-semibold text-sm"
+                  >
+                    <User className="w-4 h-4 text-[#0b3a8f]" /> Teacher Portal
+                  </Link>
+                </div>
+              </li>
             </ul>
+
             <a
               href={`tel:${schoolInfo.primaryPhone}`}
               className={`flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md font-semibold transition-all duration-300 ${isScrolled ? "px-4 py-1.5 text-xs" : "px-5 py-2 text-sm"}`}
@@ -190,12 +224,42 @@ export default function Header() {
                   </NavLink>
                 </li>
               ))}
-              <li className="px-6 py-4">
+
+              {/* NEW MOBILE SIGN IN DROPDOWN */}
+              <li>
+                <button 
+                  onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
+                  className="flex items-center justify-between w-full px-6 py-3 text-sm font-semibold uppercase tracking-wide text-white hover:bg-white/5"
+                >
+                  <span>Sign In</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${mobileDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                
+                {/* Mobile Submenu Items */}
+                <div className={`overflow-hidden transition-all duration-300 bg-black/20 ${mobileDropdownOpen ? "max-h-40" : "max-h-0"}`}>
+                  <Link 
+                    to="/student-login" 
+                    onClick={() => setOpen(false)} 
+                    className="flex items-center gap-3 px-10 py-3 text-sm font-semibold text-emerald-100 hover:text-emerald-300 hover:bg-white/5"
+                  >
+                    <GraduationCap className="w-4 h-4" /> Student Portal
+                  </Link>
+                  <Link 
+                    to="/teacher-login" 
+                    onClick={() => setOpen(false)} 
+                    className="flex items-center gap-3 px-10 py-3 text-sm font-semibold text-emerald-100 hover:text-emerald-300 hover:bg-white/5 border-t border-white/5"
+                  >
+                    <User className="w-4 h-4" /> Teacher Portal
+                  </Link>
+                </div>
+              </li>
+
+              <li className="px-6 py-4 mt-2 border-t border-white/10">
                 <a
                   href={`tel:${schoolInfo.primaryPhone}`}
                   className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 rounded-md font-semibold text-sm transition-colors"
                 >
-                  <Phone className="w-5 h-5" /> Tap to Call: {schoolInfo.primaryPhone}
+                  <Phone className="w-5 h-5" /> Tap to Call
                 </a>
               </li>
             </ul>
