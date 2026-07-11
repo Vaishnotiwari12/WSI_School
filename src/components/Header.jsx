@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Phone, Mail, Menu, X, Layers, MapPin } from "lucide-react";
 import { schoolInfo } from "../data/mock";
@@ -14,6 +14,20 @@ const navLinks = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // This detects when you scroll down to make the header dynamically shrink
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // We extract the badge into a small constant so we can reuse it on both Desktop and Mobile effortlessly
   const AdmissionBadge = () => (
@@ -34,17 +48,39 @@ export default function Header() {
   );
 
   return (
-    <header className="w-full bg-white sticky top-0 z-50 shadow-sm">
-      {/* Top announcement bar */}
-      <div className="bg-[#0b3a8f] text-white text-xs md:text-sm">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-emerald-300" />
-            <span className="opacity-90">
-              Admissions Open 2025-26 | Affiliated with CBSE Board | Nurturing Excellence Since 2005
-            </span>
+    <header className={`w-full bg-white sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "shadow-lg" : "shadow-sm"}`}>
+      
+      {/* Top announcement bar - with COMPLETELY MOVING text */}
+      <div className="bg-[#0b3a8f] text-white text-xs md:text-sm overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
+          
+          {/* Dynamic Scrolling Marquee Area */}
+          <div className="flex items-center gap-2 overflow-hidden w-full">
+            <Layers className="w-4 h-4 text-emerald-300 shrink-0 z-10 bg-[#0b3a8f]" />
+            <div className="w-full overflow-hidden relative flex items-center">
+              <style>
+                {`
+                  @keyframes scrollText {
+                    from { transform: translateX(100vw); }
+                    to { transform: translateX(-100%); }
+                  }
+                  .moving-text {
+                    display: inline-block;
+                    white-space: nowrap;
+                    animation: scrollText 25s linear infinite;
+                  }
+                  .moving-text:hover {
+                    animation-play-state: paused;
+                  }
+                `}
+              </style>
+              <div className="moving-text opacity-90 font-medium">
+                Admissions Open 2025-26 &nbsp;&nbsp; | &nbsp;&nbsp; Affiliated with CBSE Board &nbsp;&nbsp; | &nbsp;&nbsp; Nurturing Excellence Since 2005 &nbsp;&nbsp; | &nbsp;&nbsp; Enroll Today!
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="hidden md:flex items-center gap-4 shrink-0 bg-[#0b3a8f] pl-4 z-10 relative">
             <a href={`tel:${schoolInfo.primaryPhone}`} className="flex items-center gap-1.5 hover:text-emerald-300 transition-colors">
               <Phone className="w-3.5 h-3.5" />
               <span>{schoolInfo.primaryPhone}</span>
@@ -57,17 +93,17 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main header */}
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      {/* Main header - Padding and logo size shrink dynamically based on isScrolled */}
+      <div className={`max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}>
         <Link to="/" className="flex items-center gap-3">
           <img 
             src="/SchoolLogo.jpeg" 
             alt="Wonder Star International School Logo" 
-            className="h-16 md:h-20 w-auto object-contain" 
+            className={`w-auto object-contain transition-all duration-300 ${isScrolled ? "h-12 md:h-14" : "h-16 md:h-20"}`} 
           />
           
           <div>
-            <h1 className="text-lg md:text-2xl font-bold text-[#0b3a8f] leading-tight font-serif">
+            <h1 className={`font-bold text-[#0b3a8f] leading-tight font-serif transition-all duration-300 ${isScrolled ? "text-base md:text-xl" : "text-lg md:text-2xl"}`}>
               Wonder Star International School
             </h1>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -75,13 +111,13 @@ export default function Header() {
                 <MapPin className="w-3 h-3" /> {schoolInfo.addressShort}
               </span>
               <span className="text-[10px] md:text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">CBSE Affiliated</span>
-              <span className="text-[10px] md:text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold">Est. 2005</span>
+              <span className="text-[10px] md:text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold hidden md:inline-block">Est. 2005</span>
             </div>
           </div>
         </Link>
 
         {/* DESKTOP BADGE: Hidden on mobile, visible on large screens */}
-        <div className="hidden lg:block">
+        <div className={`hidden lg:block transition-all duration-300 origin-right ${isScrolled ? "scale-90" : "scale-100"}`}>
           <AdmissionBadge />
         </div>
 
@@ -95,7 +131,7 @@ export default function Header() {
       </div>
 
       {/* Nav bar */}
-      <nav className="bg-[#0b3a8f] text-white border-t-4 border-emerald-500">
+      <nav className="bg-[#0b3a8f] text-white border-t-4 border-emerald-500 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="hidden lg:flex items-center justify-between">
             <ul className="flex items-center">
@@ -104,7 +140,9 @@ export default function Header() {
                   <NavLink
                     to={link.to}
                     className={({ isActive }) =>
-                      `inline-block px-6 py-4 text-sm font-semibold uppercase tracking-wide transition-colors relative ${
+                      `inline-block px-6 transition-all duration-300 font-semibold uppercase tracking-wide relative ${
+                        isScrolled ? "py-2.5 text-xs" : "py-4 text-sm"
+                      } ${
                         isActive
                           ? "text-emerald-300 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-emerald-400"
                           : "hover:text-emerald-300"
@@ -119,7 +157,7 @@ export default function Header() {
             </ul>
             <a
               href={`tel:${schoolInfo.primaryPhone}`}
-              className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-md font-semibold text-sm transition-colors"
+              className={`flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-md font-semibold transition-all duration-300 ${isScrolled ? "px-4 py-1.5 text-xs" : "px-5 py-2 text-sm"}`}
             >
               <Phone className="w-4 h-4" /> {schoolInfo.primaryPhone}
             </a>
@@ -128,7 +166,7 @@ export default function Header() {
 
         {/* MOBILE MENU */}
         {open && (
-          <div className="lg:hidden bg-[#0b3a8f] border-t border-white/10">
+          <div className="lg:hidden bg-[#0b3a8f] border-t border-white/10 max-h-[75vh] overflow-y-auto">
             
             {/* MOBILE BADGE: Injected at the top of the mobile menu drawer */}
             <div className="flex justify-center pt-6 pb-2">
