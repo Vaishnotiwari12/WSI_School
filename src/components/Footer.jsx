@@ -27,15 +27,15 @@ export default function Footer() {
             CBSE affiliated school in Kanpur, delivering quality education with values from Nursery to Class XII since 2005.
           </p>
           <div className="flex items-center gap-3 mt-5">
-            <a href="#" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition-colors">
-              <FaFacebook className="w-4 h-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition-colors">
-              <FaInstagram className="w-4 h-4" />
-            </a>
-            <a href="#" aria-label="YouTube" className="w-9 h-9 rounded-full bg-white/10 hover:bg-emerald-500 flex items-center justify-center transition-colors">
-              <FaYoutube className="w-4 h-4" />
-            </a>
+           <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="...">
+          <FaFacebook className="w-4 h-4" />
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="...">
+          <FaInstagram className="w-4 h-4" />
+        </a>
+        <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="...">
+          <FaYoutube className="w-4 h-4" />
+        </a>
           </div>
         </div>
 
